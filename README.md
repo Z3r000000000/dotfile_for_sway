@@ -61,7 +61,7 @@
 Просто склонируйте этот репозиторий и запустите скрипт. Скрипт сам определит ваше железо, установит драйверы, шрифты и разложит конфигурационные файлы.
 
 ```bash
-git clone https://github.com/ВАШ_НИК/dotfiles-sway.git
+git clone https://github.com/Z3r000000000/dotfiles-sway.git
 cd dotfiles-sway
 chmod +x install.sh
 ./install.sh
