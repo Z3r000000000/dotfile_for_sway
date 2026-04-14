@@ -90,6 +90,8 @@ install_packages() {
         wlogout ttf-jetbrains-mono-nerd ttf-font-awesome papirus-icon-theme
         # Система
         zram-generator git base-devel
+        
+        pavucontrol nm-connection-editor wlogout
     )
     
     sudo pacman -S --needed --noconfirm "$UCODE" $GPU_DRIVERS "${pkgs[@]}" >> "$LOG_FILE" 2>&1

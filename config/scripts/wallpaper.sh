@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
-# Путь к папке с обоями (поменяй под себя)
 WALL_DIR="$HOME/Pictures/Wallpapers"
+# Цвета Tokyo Night для градиента/фона
+COLORS=("#1a1b26" "#24283b" "#7aa2f7" "#bb9af7")
+RANDOM_COLOR=${COLORS[$RANDOM % ${#COLORS[@]}]}
 
-# Проверяем, существует ли папка
-if [ ! -d "$WALL_DIR" ]; then
-    mkdir -p "$WALL_DIR"
-    # Если папки нет, скачиваем одну дефолтную картинку (опционально)
-    wget https://raw.githubusercontent.com/archcraft-os/archcraft-wallpaper/main/files/wallpaper_1.jpg -O "$WALL_DIR/default.jpg"
-fi
-
-# Выбираем случайный файл
-WALLPAPER=$(find "$WALL_DIR" -type f | shuf -n 1)
-
-# Убиваем старый процесс swaybg и запускаем новый
 killall swaybg > /dev/null 2>&1
-swaybg -i "$WALLPAPER" -m fill &
+
+if [ -d "$WALL_DIR" ] && [ "$(ls -A "$WALL_DIR")" ]; then
+    # Если папка есть и не пуста — берем рандомное фото
+    WALLPAPER=$(find "$WALL_DIR" -type f | shuf -n 1)
+    swaybg -i "$WALLPAPER" -m fill &
+else
+    # Если папки нет — ставим глубокий цвет темы
+    # (swaybg не умеет в градиент, поэтому ставим солидный фон)
+    swaybg -c "$RANDOM_COLOR" &
+fi

@@ -101,7 +101,7 @@ for_window [app_id="thunar" title="File Operation Progress"] floating enable
 # --- Автозапуск ---
 exec foot --server                          # Запуск сервера терминала для скорости
 exec mako                                   # Уведомления
-exec_always waybar                          # Панель
+exec_always "killall waybar; waybar"
 exec nm-applet --indicator                  # Сеть в трее
 exec $scripts/wallpaper.sh                  # Обои при старте
 exec polkit-gnome-authentication-agent-1    # Авторизация (Sudo в GUI)

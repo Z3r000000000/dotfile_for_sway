@@ -43,16 +43,16 @@
         "format": "{icon} {capacity}%",
         "format-charging": " {capacity}%",
         "format-plugged": " {capacity}%",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": ["", "", "", "", ""],
+        "on-click": "foot htop"
     },
 
     "pulseaudio": {
         "format": "{icon} {volume}%",
-        "format-muted": "",
-        "format-icons": {
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
+        "format-muted": "󰝟",
+        "format-icons": { "default": ["", "", ""] },
+        "on-click": "pamixer -t",
+        "on-click-right": "pavucontrol"
     },
 
     "backlight": {
@@ -62,13 +62,13 @@
 
     "network": {
         "format-wifi": " {essid}",
-        "format-ethernet": "󰈀",
-        "format-disconnected": "󰖪",
-        "tooltip-format-wifi": "{signalStrength}%"
+        "format-disconnected": "󰖪 Disconnected",
+        "on-click": "nm-connection-editor"
     },
 
     "custom/power": {
         "format": "⏻",
-        "on-click": "wlogout"
+        "on-click": "wlogout -b 2",
+        "tooltip": false
     }
 }
