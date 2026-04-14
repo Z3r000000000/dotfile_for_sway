@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-LOG_FILE="$REPO_DIR/install.log"
-# Очищаем лог при запуске
-echo "--- СТАРТ УСТАНОВКИ $(date) ---" > "$LOG_FILE"
+# Цвета Tokyo Night
+export CL_BLUE='\033[0;34m'; export CL_CYAN='\033[0;36m'; export CL_GREEN='\033[0;32m'
+export CL_RED='\033[0;31m'; export CL_MAGENTA='\033[0;35m'; export CL_YELLOW='\033[1;33m'
+export BOLD='\033[1m'; export RC='\033[0m'
 
 log() {
     local level="$1"
@@ -10,24 +11,27 @@ log() {
     case "$level" in
         "info")    echo -e "[${CL_BLUE}ℹ${RC}] $msg" ;;
         "success") echo -e "[${CL_GREEN}✔${RC}] $msg" ;;
-        "error")   echo -e "[${CL_RED}✘${RC}] $msg" ; echo "[ERROR] $msg" >> "$LOG_FILE" ;;
+        "error")   echo -e "[${CL_RED}✘${RC}] $msg" ; echo "[ERROR] $msg" >> "$LOG_FILE" ; exit 1 ;;
         "warn")    echo -e "[${CL_YELLOW}⚠${RC}] $msg" ;;
     esac
-    # Дублируем все сообщения в лог-файл без цветов
     echo "[$(date +'%H:%M:%S')] [$level] $msg" >> "$LOG_FILE"
 }
 
-# Функция-обертка для запуска команд
-# Использование: run_cmd "Название действия" "команда"
+# Функция для запуска команд с перенаправлением вывода в лог
 run_cmd() {
     local msg="$1"
     local cmd="$2"
-
     log "info" "$msg..."
     if eval "$cmd" >> "$LOG_FILE" 2>&1; then
-        log "success" "Готово: $msg"
+        return 0
     else
-        log "warn" "Ошибка при: $msg. Подробности в install.log"
+        log "warn" "Ошибка при: $msg. Проверьте install.log"
         return 1
     fi
+}
+
+print_banner() {
+    clear
+    echo -e "${CL_MAGENTA}${BOLD}🌌 TOKYO NIGHT SWAY : ARCH INSTALLER${RC}"
+    echo -e "${CL_BLUE}---------------------------------------${RC}\n"
 }

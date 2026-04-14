@@ -1,57 +1,43 @@
 #!/usr/bin/env bash
 
-# Пакеты из официальных репозиториев
-REPO_PKGS=(
-    sway waybar foot wofi mako swaylock git base-devel 
-    fish starship brightnessctl pamixer libnotify wl-clipboard
-    ttf-jetbrains-mono-nerd ttf-font-awesome adobe-source-code-pro-fonts
-    zram-generator mesa intel-media-driver vulkan-intel
-)
+REPO_PKGS=(sway waybar foot wofi mako swaylock git base-devel fish starship brightnessctl pamixer libnotify wl-clipboard ttf-jetbrains-mono-nerd ttf-font-awesome)
+AUR_PKGS=(wlogout)
 
-# Пакеты из AUR
-AUR_PKGS=(
-    wlogout
-    # сюда можно добавить swaylock-effects, если захочешь размытие при блокировке
-)
+detect_hardware() {
+    log "info" "Определение оборудования..."
+    if grep -q "Intel" /proc/cpuinfo; then
+        UCODE="intel-ucode"
+        GPU_DRV="mesa vulkan-intel intel-media-driver libva-intel-driver"
+        log "info" "Оптимизация под Intel включена."
+    else
+        UCODE="amd-ucode"
+        GPU_DRV="mesa lib32-mesa xf86-video-amdgpu"
+    fi
+}
 
 install_packages() {
-    log "info" "Обновление баз данных pacman..."
-    sudo pacman -Sy
+    log "info" "Обновление баз данных..."
+    sudo pacman -Sy --noconfirm
 
-    # 1. Установка официальных пакетов
-    log "info" "Установка системных пакетов..."
-    for pkg in "${REPO_PKGS[@]}"; do
-        if _check_pkg "$pkg"; then
-            log "success" "Пакет $pkg уже установлен"
-        else
-            run_cmd "Установка $pkg" "sudo pacman -S --needed --noconfirm $pkg"
-        fi
-    done
+    log "info" "Установка официальных пакетов..."
+    sudo pacman -S --needed --noconfirm "${REPO_PKGS[@]}" $UCODE $GPU_DRV
 
-    # 2. Обработка AUR
     install_aur_helper
-    
     for pkg in "${AUR_PKGS[@]}"; do
-        if _check_pkg "$pkg"; then
-            log "success" "AUR пакет $pkg уже установлен"
-        else
-            if command -v yay &> /dev/null; then
-                run_cmd "Установка AUR пакета $pkg" "yay -S --noconfirm $pkg"
-            elif command -v paru &> /dev/null; then
-                run_cmd "Установка AUR пакета $pkg" "paru -S --noconfirm $pkg"
-            else
-                log "warn" "Пропуск $pkg: AUR помощник не найден."
-            fi
-        fi
+        run_cmd "Установка AUR пакета $pkg" "yay -S --noconfirm $pkg"
     done
 }
 
 install_aur_helper() {
-    if command -v yay &> /dev/null || command -v paru &> /dev/null; then
-        log "success" "AUR помощник найден."
-    else
-        log "info" "AUR помощник не найден. Пытаюсь установить yay..."
+    if ! command -v yay &> /dev/null; then
+        log "info" "Установка yay (AUR помощник)..."
         run_cmd "Клонирование yay" "git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin"
         run_cmd "Сборка yay" "cd /tmp/yay-bin && makepkg -si --noconfirm"
     fi
+}
+
+setup_zram() {
+    run_cmd "Настройка ZRAM" "sudo pacman -S --needed --noconfirm zram-generator && \
+    sudo bash -c 'echo -e \"[zram0]\nzram-size = ram / 2\ncompression-algorithm = zstd\" > /etc/systemd/zram-generator.conf' && \
+    sudo systemctl daemon-reload && sudo systemctl start /dev/zram0"
 }

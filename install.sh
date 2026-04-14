@@ -1,43 +1,57 @@
 #!/usr/bin/env bash
+
+# Остановка при критических ошибках
 set -e
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Определение путей
+export REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export LIB_DIR="$REPO_DIR/lib"
+export LOG_FILE="$REPO_DIR/install.log"
 
-# Подгружаем модули (не забудь добавить checks.sh!)
-source "$REPO_DIR/lib/ui.sh"
-source "$REPO_DIR/lib/system.sh"
-source "$REPO_DIR/lib/configs.sh"
-source "$REPO_DIR/lib/terminal.sh"
-source "$REPO_DIR/lib/assets.sh"
-source "$REPO_DIR/lib/checks.sh" # <--- Добавили новый модуль
+# Подгрузка модулей
+for module in "$LIB_DIR/"*.sh; do source "$module"; done
+
+# Инициализация лога
+echo "--- ЗАПУСК УСТАНОВКИ: $(date) ---" > "$LOG_FILE"
 
 print_banner
 
-# ... (проверка на root) ...
+# Проверка на root
+if [ "$EUID" -eq 0 ]; then
+    log "error" "Не запускайте скрипт через sudo. Он сам запросит пароль."
+fi
 
-echo -e "1) ${CL_GREEN}Полная установка${RC}"
-echo -e "2) ${CL_CYAN}Обновить только конфиги${RC}"
-echo -e "3) ${CL_YELLOW}Проверить статус системы (Health Check)${RC}"
-echo -e "4) ${CL_RED}Выход${RC}"
+echo -e "${BOLD}Выберите режим:${RC}"
+echo -e "  ${CL_GREEN}1)${RC} Полноценная установка (Система + Пакеты + Конфиги)"
+echo -e "  ${CL_CYAN}2)${RC} Обновить только конфигурации и обои"
+echo -e "  ${CL_YELLOW}3)${RC} Проверить состояние системы (Health Check)"
+echo -e "  ${CL_RED}4)${RC} Выход"
 read -p ">> " choice
 
 case $choice in
     1)
-        detect_and_install
+        log "info" "Начинаю полную установку..."
+        detect_hardware
+        install_packages
+        setup_zram
         setup_terminal
         sync_assets
         deploy_configs
-        verify_system # Запуск проверки сразу после установки
+        verify_system
+        log "success" "Установка завершена! Перезагрузите систему."
         ;;
     2)
         deploy_configs
-        log "success" "Конфиги обновлены."
+        sync_assets
+        log "success" "Конфигурации обновлены."
         ;;
     3)
-        verify_system # Просто проверка
-        exec "$0" # Перезапуск скрипта, чтобы вернуться в меню после проверки
+        verify_system
+        ;;
+    4)
+        exit 0
         ;;
     *)
-        exit 0
+        log "warn" "Неверный выбор."
         ;;
 esac

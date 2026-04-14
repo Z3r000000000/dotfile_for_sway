@@ -1,28 +1,25 @@
 #!/usr/bin/env bash
 
-# Добавим проверку AUR пакетов в общий отчет
-verify_system() {
-    print_banner
-    log "info" "Диагностика системы..."
-    echo "--------------------------------------------------"
-    
-    local critical_errors=0
+_check_pkg() { pacman -Qi "$1" &> /dev/null; }
+_check_file() { [ -e "$HOME/.config/$1" ]; }
 
-    echo -e "${BOLD}Официальные репозитории:${RC}"
-    run_check "Sway WM" _check_pkg "sway" || ((critical_errors++))
-    run_check "Waybar" _check_pkg "waybar" || ((critical_errors++))
-    
-    echo -e "\n${BOLD}AUR пакеты:${RC}"
-    run_check "wlogout (меню выхода)" _check_pkg "wlogout"
-    
-    echo -e "\n${BOLD}Конфигурация:${RC}"
-    run_check "Конфиг Fish" _check_file "fish/config.fish"
-    run_check "Конфиг Starship" _check_file "starship.toml"
-
-    echo "--------------------------------------------------"
-    if [ $critical_errors -eq 0 ]; then
-        log "success" "Базовая система настроена. Можно запускать Sway!"
+run_check() {
+    local label="$1"; local func="$2"; local arg="$3"
+    printf "  %-30s " "${CL_CYAN}$label...${RC}"
+    if $func "$arg"; then
+        echo -e "${CL_GREEN}[OK]${RC}"
     else
-        log "error" "Критическая нехватка пакетов ($critical_errors). Проверьте install.log"
+        echo -e "${CL_RED}[MISSING]${RC}"
     fi
+}
+
+verify_system() {
+    echo -e "\n${BOLD}🔍 ДИАГНОСТИКА СИСТЕМЫ:${RC}"
+    run_check "Sway" _check_pkg "sway"
+    run_check "Waybar" _check_pkg "waybar"
+    run_check "wlogout (AUR)" _check_pkg "wlogout"
+    run_check "Fish Shell" _check_pkg "fish"
+    run_check "Конфиг Sway" _check_file "sway/config"
+    run_check "Конфиг Starship" _check_file "starship.toml"
+    echo -e "---------------------------------------\n"
 }
