@@ -1,0 +1,91 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(36, 40, 59, 0.9); /* Темно-синий полупрозрачный */
+    color: #c0caf5;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+/* Общий стиль для каждого модуля (блока) */
+#workspaces,
+#window,
+#clock,
+#battery,
+#pulseaudio,
+#network,
+#backlight,
+#bluetooth,
+#custom-power {
+    padding: 0 10px;
+    border-radius: 15px;
+    background-color: #3b4261;
+    margin: 5px 3px;
+}
+
+/* Индивидуальные цвета для красоты как в Archcraft */
+
+#workspaces button {
+    padding: 0 5px;
+    color: #7aa2f7;
+}
+
+#workspaces button.focused {
+    color: #bb9af7;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+#window {
+    background-color: transparent; /* Окно просто текстом */
+}
+
+#clock {
+    color: #7aa2f7;
+    background-color: #24283b;
+    border: 1px solid #7aa2f7;
+}
+
+#battery {
+    color: #9ece6a;
+}
+
+#battery.critical {
+    color: #f7768e;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#pulseaudio {
+    color: #bb9af7;
+}
+
+#network {
+    color: #b4f9f8;
+}
+
+#backlight {
+    color: #e0af68;
+}
+
+#custom-power {
+    color: #f7768e;
+    background-color: #3b4261;
+    padding-right: 15px;
+}
+
+@keyframes blink {
+    to {
+        background-color: #f7768e;
+        color: #24283b;
+    }
+}

@@ -1,0 +1,114 @@
+# =============================================================================
+# ОСНОВНОЙ КОНФИГУРАЦИОННЫЙ ФАЙЛ SWAY (Tokyo Night Style)
+# =============================================================================
+
+# --- Переменные ---
+set $mod Mod4
+set $term footclient
+set $menu wofi --show drun
+set $scripts ~/.config/sway/scripts
+
+# --- Вывод и монитор ---
+# Для 11.6" экрана 1920x1080. Если всё слишком мелко, поменяй scale на 1.25
+output * scale 1.0
+output * bg #1a1b26 solid
+
+# --- Ввод (Клавиатура и Тачпад) ---
+input "type:keyboard" {
+    xkb_layout us,ru
+    xkb_options grp:alt_shift_toggle
+}
+
+input "type:touchpad" {
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+}
+
+# --- Шрифты ---
+font pango:JetBrainsMono Nerd Font 10
+
+# --- Оформление окон ---
+default_border pixel 2
+default_floating_border normal
+hide_edge_borders none
+gaps inner 10
+gaps outer 5
+
+# Цвета окон (Tokyo Night)
+# class                 border  backgr. text    indicator child_border
+client.focused          #7aa2f7 #3b4261 #c0caf5 #bb9af7   #7aa2f7
+client.focused_inactive #24283b #24283b #a9b1d6 #24283b   #24283b
+client.unfocused        #1a1b26 #1a1b26 #565f89 #1a1b26   #1a1b26
+client.urgent           #f7768e #f7768e #ffffff #f7768e   #f7768e
+
+# --- Горячие клавиши (Приложения) ---
+bindsym $mod+Return      exec $term
+bindsym $mod+d           exec $menu
+bindsym $mod+e           exec thunar
+bindsym $mod+b           exec firefox
+bindsym $mod+v           exec code
+bindsym $mod+q           kill
+
+# --- Горячие клавиши (Система) ---
+bindsym $mod+l           exec $scripts/lock.sh        # Блокировка
+bindsym $mod+0           exec wlogout -b 2            # Меню питания
+bindsym $mod+w           exec $scripts/wallpaper.sh   # Смена обоев
+bindsym $mod+Shift+c     reload                       # Перезагрузить конфиг
+bindsym $mod+Shift+e     exec swaynag -t warning -m 'Выйти из Sway?' -b 'Да' 'swaymsg exit'
+
+# --- Скриншоты (grim + slurp) ---
+bindsym Print            exec grim ~/Pictures/$(date +%Y-%m-%d_%H-%m-%s).png
+bindsym $mod+Print       exec grim -g "$(slurp)" ~/Pictures/$(date +%Y-%m-%d_%H-%m-%s).png
+
+# --- Мультимедиа клавиши (brightnessctl + pamixer) ---
+bindsym XF86MonBrightnessUp   exec brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86AudioRaiseVolume  exec pamixer -i 5
+bindsym XF86AudioLowerVolume  exec pamixer -d 5
+bindsym XF86AudioMute         exec pamixer -t
+bindsym XF86AudioMicMute      exec pamixer --default-source -t
+
+# --- Управление окнами (Стрелки) ---
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Right move right
+
+# --- Режим изменения размера (Resizing) ---
+mode "resize" {
+    bindsym Left  resize shrink width 10px
+    bindsym Down  resize grow height 10px
+    bindsym Up    resize shrink height 10px
+    bindsym Right resize grow width 10px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# --- Правила окон (Floating) ---
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [app_id="pavucontrol"] floating enable, resize set 600 400
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [app_id="thunar" title="File Operation Progress"] floating enable
+
+# --- Автозапуск ---
+exec foot --server                          # Запуск сервера терминала для скорости
+exec mako                                   # Уведомления
+exec_always waybar                          # Панель
+exec nm-applet --indicator                  # Сеть в трее
+exec $scripts/wallpaper.sh                  # Обои при старте
+exec polkit-gnome-authentication-agent-1    # Авторизация (Sudo в GUI)
+
+# Автоблокировка и сон
+exec swayidle -w \
+     timeout 300 '$scripts/lock.sh' \
+     timeout 600 'swaymsg "output * dpms off"' \
+     resume 'swaymsg "output * dpms on"' \
+     before-sleep '$scripts/lock.sh'

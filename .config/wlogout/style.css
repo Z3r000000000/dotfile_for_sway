@@ -1,0 +1,28 @@
+window {
+    background-color: rgba(26, 27, 38, 0.85);
+}
+
+button {
+    color: #c0caf5;
+    background-color: #24283b;
+    border: 2px solid #7aa2f7;
+    border-radius: 20px;
+    margin: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 25%;
+}
+
+button:focus, button:active, button:hover {
+    background-color: #7aa2f7;
+    color: #1a1b26;
+    outline-style: none;
+}
+
+/* Иконки для кнопок (пути стандартные для wlogout) */
+#lock { background-image: image(url("/usr/share/wlogout/icons/lock.png")); }
+#logout { background-image: image(url("/usr/share/wlogout/icons/logout.png")); }
+#suspend { background-image: image(url("/usr/share/wlogout/icons/suspend.png")); }
+#hibernate { background-image: image(url("/usr/share/wlogout/icons/hibernate.png")); }
+#shutdown { background-image: image(url("/usr/share/wlogout/icons/shutdown.png")); }
+#reboot { background-image: image(url("/usr/share/wlogout/icons/reboot.png")); }

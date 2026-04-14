@@ -1,0 +1,76 @@
+/* Общее окно */
+window {
+    margin: 0px;
+    border: 2px solid #7aa2f7; /* Цвет рамки (светло-синий) */
+    background-color: #24283b; /* Фон Tokyo Night */
+    border-radius: 15px;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+}
+
+/* Внутренний контейнер */
+#outer-box {
+    margin: 15px;
+    border: none;
+    background-color: transparent;
+}
+
+/* Строка поиска */
+#input {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    color: #c0caf5;
+    background-color: #3b4261; /* Чуть светлее фона */
+    outline: none;
+}
+
+/* Текст внутри строки поиска */
+#input:focus {
+    border: 1px solid #bb9af7;
+}
+
+/* Общий список приложений */
+#scroll {
+    margin: 5px;
+    border: none;
+}
+
+/* Каждая строка (приложение) */
+#entry {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    color: #c0caf5;
+}
+
+/* Иконки приложений */
+#img {
+    margin-right: 15px;
+}
+
+/* Выделенное приложение (на которое наведен фокус) */
+#entry:selected {
+    background-color: #7aa2f7; /* Цвет выделения как на скринах */
+    color: #1a1b26;
+    outline: none;
+}
+
+/* Текст выделенного приложения */
+#entry:selected #text {
+    font-weight: bold;
+}
+
+/* Убираем лишние рамки у внутренних элементов */
+#inner-box {
+    margin: 5px;
+    border: none;
+    background-color: transparent;
+}
+
+#text {
+    margin: 5px;
+    border: none;
+    background-color: transparent;
+}
