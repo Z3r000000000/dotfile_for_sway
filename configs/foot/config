@@ -1,7 +1,7 @@
 # --- Секция Main ---
 [main]
 # Шрифт (обязательно Nerd Font для иконок)
-font=JetBrainsMono Nerd Font:size=10
+font=JetBrainsMono Nerd Font:size=18
 # Внутренние отступы от краев (чтобы текст не лип к рамке)
 pad=15x15
 # Оболочка (лучше оставить пустой, подхватит системную, например fish)
@@ -12,10 +12,11 @@ shell=/usr/bin/fish
 style=block
 color=1a1b26 c0caf5
 blink=yes
+underline=no 
 
 # --- Секция Цвета (Tokyo Night) ---
 [colors]
-alpha=0.93  # Небольшая прозрачность для стиля
+alpha=0.85
 background=1a1b26
 foreground=c0caf5
 
@@ -47,7 +48,7 @@ lines=5000
 [url]
 launch=xdg-open ${url}
 label-letters=sadfjklewcmpgh
-osc8-underline=always
+osc8-underline=none
 
 # --- Секция Mouse ---
 [mouse]

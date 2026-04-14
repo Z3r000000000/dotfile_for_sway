@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
 WALL_DIR="$HOME/Pictures/Wallpapers"
-# Цвета Tokyo Night для градиента/фона
-COLORS=("#1a1b26" "#24283b" "#7aa2f7" "#bb9af7")
-RANDOM_COLOR=${COLORS[$RANDOM % ${#COLORS[@]}]}
 
-killall swaybg > /dev/null 2>&1
-
-if [ -d "$WALL_DIR" ] && [ "$(ls -A "$WALL_DIR")" ]; then
-    # Если папка есть и не пуста — берем рандомное фото
-    WALLPAPER=$(find "$WALL_DIR" -type f | shuf -n 1)
-    swaybg -i "$WALLPAPER" -m fill &
-else
-    # Если папки нет — ставим глубокий цвет темы
-    # (swaybg не умеет в градиент, поэтому ставим солидный фон)
-    swaybg -c "$RANDOM_COLOR" &
+# Проверка: если папка пуста или не существует
+if [ ! -d "$WALL_DIR" ] || [ -z "$(ls -A "$WALL_DIR")" ]; then
+    swaybg -c "#1a1b26" & # Просто заливка если обоев нет
+    exit 0
 fi
+
+# Выбираем случайный файл (jpg, png, webp)
+RANDOM_WALL=$(find "$WALL_DIR" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.webp" \) | shuf -n 1)
+
+# Убиваем старый процесс и ставим новые обои
+killall swaybg 2>/dev/null
+swaybg -i "$RANDOM_WALL" -m fill &

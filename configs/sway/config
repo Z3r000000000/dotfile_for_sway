@@ -43,19 +43,21 @@ client.unfocused        #1a1b26 #1a1b26 #565f89 #1a1b26   #1a1b26
 client.urgent           #f7768e #f7768e #ffffff #f7768e   #f7768e
 
 # --- Горячие клавиши (Приложения) ---
-bindsym $mod+Return      exec $term
-bindsym $mod+d           exec $menu
-bindsym $mod+e           exec thunar
-bindsym $mod+b           exec firefox
-bindsym $mod+v           exec code
-bindsym $mod+q           kill
+bindsym $mod+r       exec $menu                  # Wofi (Launcher)
+bindsym $mod+e       exec thunar                 # File Manager
+bindsym $mod+b       exec firefox                # Browser
+bindsym $mod+v       exec code                   # VS Code
+bindsym $mod+t       exec telegram-desktop       # Telegram
+bindsym $mod+Return  exec $term                  # Terminal
+bindsym $mod+q       kill                        # Закрыть окно
 
 # --- Горячие клавиши (Система) ---
-bindsym $mod+l           exec $scripts/lock.sh        # Блокировка
-bindsym $mod+0           exec wlogout -b 2            # Меню питания
-bindsym $mod+w           exec $scripts/wallpaper.sh   # Смена обоев
+bindsym $mod+l       exec $scripts/lock.sh       # Блокировка
+bindsym $mod+Escape  exec wlogout -b 2           # Меню питания
+bindsym $mod+Shift+w exec $scripts/wallpaper.sh  # СЛУЧАЙНЫЕ ОБОИ (Win+Shift+W)
 bindsym $mod+Shift+c     reload                       # Перезагрузить конфиг
 bindsym $mod+Shift+e     exec swaynag -t warning -m 'Выйти из Sway?' -b 'Да' 'swaymsg exit'
+floating_modifier $mod
 
 # --- Скриншоты (grim + slurp) ---
 bindsym Print            exec grim ~/Pictures/$(date +%Y-%m-%d_%H-%m-%s).png

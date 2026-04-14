@@ -1,7 +1,15 @@
-#!/usr/bin/env bash
 sync_assets() {
-    local wall_url="https://github.com/dhrruvsharma/wallpapers.git"
-    local wall_dir="$HOME/Pictures/Wallpapers"
+    # Обои
+    fetch_resource "https://github.com/dhrruvsharma/wallpapers.git" "$HOME/Pictures/Wallpapers" "Обои"
     
-    fetch_resource "$wall_url" "$wall_dir" "Обои Tokyo Night"
+    # SDDM Тема (Tokyo Night)
+    sudo mkdir -p /usr/share/sddm/themes
+    fetch_resource "https://github.com/sukkisukki/sddm-tokyo-night.git" "/tmp/sddm-theme" "Тема входа"
+    sudo cp -r /tmp/sddm-theme /usr/share/sddm/themes/tokyo-night
+    
+    # Установка темы как дефолтной
+    sudo bash -c 'cat <<EOF > /etc/sddm.conf
+[Theme]
+Current=tokyo-night
+EOF'
 }
