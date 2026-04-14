@@ -1,0 +1,15 @@
+format = "[](#7aa2f7)$directory[](fg:#7aa2f7 bg:#3b4261)$git_branch[](fg:#3b4261) $character"
+add_newline = false
+
+[directory]
+style = "bg:#7aa2f7 fg:#15161e"
+format = "[ $path ]($style)"
+
+[git_branch]
+symbol = "󰊢 "
+style = "bg:#3b4261 fg:#7aa2f7"
+format = "[[ $symbol$branch ]($style)]"
+
+[character]
+success_symbol = "[󰄬](bold green) "
+error_symbol = "[󰅙](bold red) "
